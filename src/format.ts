@@ -1,6 +1,8 @@
 import winston = require("winston");
 import { Package } from "./entities";
 
+const fs = require("fs");
+
 const HEADER = "type,package,source,dependent,url";
 
 export class Format {
@@ -23,6 +25,9 @@ export class Format {
         );
       }
     }
+
+    fs.writeFileSync("output.csv", output.join("\n"));
+
     console.log(output.join("\n"));
   }
 }
