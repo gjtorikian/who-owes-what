@@ -5,5 +5,7 @@ export interface Dependent {
 
 export interface Package {
   name: string;
+  type: string;
+  source: string;
   dependents: Dependent[];
 }

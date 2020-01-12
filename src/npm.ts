@@ -8,6 +8,7 @@ import * as cheerio from "cheerio";
 import * as moment from "moment";
 
 const NPM_ROOT = "https://www.npmjs.com";
+const NPM_PACKAGE = "https://www.npmjs.com/package/";
 
 export class NPM {
   logger: winston.Logger;
@@ -35,11 +36,11 @@ export class NPM {
     const repos = await maintainer.repos();
     const repoCount = repos.length;
     if (repoCount > 1) {
-      this.logger.info(`Found ${repoCount} packages`);
+      this.logger.info(`Found ${repoCount} NPM packages`);
     } else if (repoCount === 1) {
-      this.logger.info(`Found ${repoCount} package`);
+      this.logger.info(`Found ${repoCount} NPM package`);
     } else {
-      this.logger.info("No packages found");
+      this.logger.info("No NPM packages found");
       return [];
     }
 
@@ -58,14 +59,19 @@ export class NPM {
 
       if (dependentsCount === 0) {
         this.logger.info("No dependents found");
-        continue;
+        dependents.push({ name: "", url: "" });
       } else if (dependentsCount > 1) {
         this.logger.info(`${dependentsCount} dependents found`);
       } else {
         this.logger.info(`${dependentsCount} dependent found`);
       }
 
-      packages.push({ name: repo, dependents: dependents });
+      packages.push({
+        name: repo,
+        type: "npm",
+        source: `${NPM_PACKAGE}${repo}`,
+        dependents: dependents
+      });
     }
 
     return packages;
@@ -101,7 +107,7 @@ export class NPM {
       if (date >= this.deadline) {
         const dependent: Dependent = {
           name: name,
-          url: `https://www.npmjs.com/package/${name}`
+          url: `${NPM_PACKAGE}${name}`
         };
         dependents.push(dependent);
       }

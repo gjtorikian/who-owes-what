@@ -1,7 +1,7 @@
-import winston = require('winston');
-import {Package} from './entities'
+import winston = require("winston");
+import { Package } from "./entities";
 
-const HEADER = 'package,dependent,url'
+const HEADER = "type,package,source,dependent,url";
 
 export class Format {
   logger: winston.Logger;
@@ -9,18 +9,20 @@ export class Format {
   packages: Package[];
 
   constructor(logger: winston.Logger, packages: Package[]) {
-    this.logger = logger
-    this.packages = packages
+    this.logger = logger;
+    this.packages = packages;
   }
 
   async csv() {
-    let output: string[]
-    output = [HEADER]
+    let output: string[];
+    output = [HEADER];
     for (const pkg of this.packages) {
       for (const dependent of pkg.dependents) {
-        output.push(`${pkg.name},${dependent.name},${dependent.url}`)
+        output.push(
+          `${pkg.type},${pkg.name},${pkg.source},${dependent.name},${dependent.url}`
+        );
       }
     }
-    console.log(output.join('\n'))
+    console.log(output.join("\n"));
   }
 }
